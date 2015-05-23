@@ -1,6 +1,6 @@
 var React = require('react')
-var Model = require('../public/js/src/todomvc/model')
-var View = require('../public/js/src/todomvc/component/view')
+var Model = require('../public/js/src/index/model')
+var View = require('../public/js/src/index/component/view')
 var low = require('lowdb')
 var db = low('./database/db.json')
 

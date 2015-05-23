@@ -2,8 +2,7 @@ module.exports = {
   cache: true,
 
   entry: {
-    // 'index': ['index/app.js'],
-    'todomvc': ['todomvc/app.js']
+    'index': ['index/app.js'],
   },
 
   output: {

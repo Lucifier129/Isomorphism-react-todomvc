@@ -8,7 +8,7 @@ class App {
 	constructor(View, Model) {
 		this.View = View
 		this.Model = Model
-		this.url = 'todomvc/todos'
+		this.url = '/todos'
 	}
 	init() {
 		this.model = new this.Model(this.getInitialData().todos)

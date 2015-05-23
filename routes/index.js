@@ -1,14 +1,41 @@
 var express = require('express')
 var router = express.Router()
+var store = require('../database/todos-store')
+var ok = {
+	meta: {
+		state: 0,
+		message: 'ok'
+	},
+	data: null
+}
 
-/* GET home page. */
 router.get('/', function(req, res) {
-	var data = {
-		title: 'pratise',
-		body: null,
-		appScript: 'js/dest/index.bundle.js'
+	res.render('index', store.getComponent())
+})
+
+router.post('/todos', function(req, res) {
+	switch (req.body.type) {
+		case 'addTodo':
+			store.addTodo(req.body.todo)
+			break
+		case 'toggleAll':
+			store.toggleAll(req.body.completed)
+			break
+		case 'clearCompleted':
+			store.clearCompleted()
+			break
 	}
-	res.render('index', data)
+	res.send(ok)
+})
+
+router.patch('/todos', function(req, res) {
+	store.updateTodo(req.body.todo)
+	res.send(ok)
+})
+
+router.delete('/todos', function(req, res) {
+	store.removeTodo(req.body.id)
+	res.send(ok)
 })
 
 module.exports = router

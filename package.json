@@ -1,6 +1,6 @@
 {
-  "name": "pratise",
-  "version": "0.0.0",
+  "name": "Isomorphism-react-todomvc",
+  "version": "0.0.1",
   "private": true,
   "main": "app.js",
   "scripts": {

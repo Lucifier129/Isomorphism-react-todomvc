@@ -4,10 +4,9 @@
  * Module dependencies.
  */
 
-var APP = require('../app');
 var debug = require('debug')('pratise:server');
-var app = APP.app;
-var server = APP.server;
+var app = require('../app');
+var connect = require('../database/connect')
 
 /**
  * Get port from environment and store in Express.
@@ -19,6 +18,9 @@ app.set('port', port);
  * Listen on provided port, on all network interfaces.
  */
 
+ var server = require('http').createServer(app);
+
+connect(server)
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
