@@ -1,7 +1,8 @@
-var express = require('express')
-var router = express.Router()
-var store = require('../database/todos-store')
-var ok = {
+import express from 'express'
+import store from '../database/todos-store'
+
+let router = express.Router()
+let ok = {
 	meta: {
 		state: 0,
 		message: 'ok'
@@ -9,11 +10,11 @@ var ok = {
 	data: null
 }
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
 	res.render('index', store.getComponent())
 })
 
-router.post('/todos', function(req, res) {
+router.post('/todos', (req, res) => {
 	switch (req.body.type) {
 		case 'addTodo':
 			store.addTodo(req.body.todo)
@@ -28,14 +29,14 @@ router.post('/todos', function(req, res) {
 	res.send(ok)
 })
 
-router.patch('/todos', function(req, res) {
+router.patch('/todos', (req, res) => {
 	store.updateTodo(req.body.todo)
 	res.send(ok)
 })
 
-router.delete('/todos', function(req, res) {
+router.delete('/todos', (req, res) => {
 	store.removeTodo(req.body.id)
 	res.send(ok)
 })
 
-module.exports = router
+export default router

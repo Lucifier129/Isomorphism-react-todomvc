@@ -1,7 +1,7 @@
-var todosStore = require('./todos-store')
-var socketIO = require('socket.io')
+import todosStore from './todos-store'
+import socketIO from 'socket.io'
 
-module.exports = function(server) {
-	var io = socketIO(server)
+export default (server) => {
+    let io = socketIO(server)
 	todosStore.io = io
 }

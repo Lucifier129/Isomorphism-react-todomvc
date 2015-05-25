@@ -1,52 +1,48 @@
-var React = require('react')
-var Model = require('../public/js/src/index/model')
-var View = require('../public/js/src/index/component/view')
-var low = require('lowdb')
-var db = low('./database/db.json')
+import React from 'react'
+import Model from '../public/js/src/index/model'
+import View from '../public/js/src/index/component/view'
+import low from 'lowdb'
+let db = low('./database/db.json')
 
-var store = {
-	emit: function() {
+export default {
+	emit() {
 		if (this.io) {
 			this.io.emit('change', {
 				todos: db('todos')
 			})
 		}
 	},
-	getComponent: function() {
-		var data = new Model(db('todos')).getData('/')
-		var component = React.renderToString(React.createElement(View, data))
+	getComponent() {
+		let data = new Model(db('todos')).getData('/')
+		let component = React.renderToString(React.createElement(View, data))
 		return {
 			component: component,
 			initialData: JSON.stringify(data)
 		}
 	},
-	addTodo: function(todo) {
+	addTodo(todo) {
 		db('todos').push(todo)
 		db.save()
 		this.emit()
 	},
-	toggleAll: function(completed) {
+	toggleAll(completed) {
 		new Model(db('todos')).toggleAll(completed)
 		db.save()
 		this.emit()
 	},
-	clearCompleted: function() {
-		db('todos').remove(function(todo) {
-			return todo.completed
-		})
+	clearCompleted() {
+		db('todos').remove((todo) => todo.completed)
 		db.save()
 		this.emit()
 	},
-	updateTodo: function(todo) {
+	updateTodo(todo) {
 		new Model(db('todos')).updateTodo(todo)
 		db.save()
 		this.emit()
 	},
-	removeTodo: function(id) {
+	removeTodo(id) {
 		new Model(db('todos')).removeTodo(id)
 		db.save()
 		this.emit()
 	}
 }
-
-module.exports = store
