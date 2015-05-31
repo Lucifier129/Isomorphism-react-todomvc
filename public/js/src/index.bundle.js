@@ -79,8 +79,6 @@
 
 	var _superagent2 = _interopRequireDefault(_superagent);
 
-	window.request = _superagent2['default'];
-
 	var App = (function () {
 		function App(View, Model) {
 			_classCallCheck(this, App);
@@ -104,6 +102,7 @@
 				window.addEventListener('hashchange', function () {
 					return _this.render();
 				}, false);
+				window.request = _superagent2['default'];
 			}
 		}, {
 			key: 'getInitialData',
@@ -571,8 +570,6 @@
 
 	var _actions = __webpack_require__(19);
 
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var ENTER_KEY = 13;
 	var ESCAPE_KEY = 27;
 
@@ -592,7 +589,7 @@
 			value: function handleBlur(e) {
 				var title = e.target.value.trim();
 				if (title) {
-					_actions2['default'].addTodo(title);
+					(0, _actions.addTodo)(title);
 					e.target.value = '';
 				}
 			}
@@ -667,8 +664,6 @@
 
 	var _actions = __webpack_require__(19);
 
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var Main = (function (_React$Component) {
 		function Main() {
 			_classCallCheck(this, Main);
@@ -681,20 +676,13 @@
 		_inherits(Main, _React$Component);
 
 		_createClass(Main, [{
-			key: 'handleChange',
-			value: function handleChange(e) {
-				_actions2['default'].toggleAll(e.target.checked);
-			}
-		}, {
 			key: 'render',
 			value: function render() {
-				var _this = this;
-
 				return _react2['default'].createElement(
 					'section',
 					{ id: 'main' },
 					_react2['default'].createElement('input', { id: 'toggle-all', type: 'checkbox', onChange: function (e) {
-							return _this.handleChange(e);
+							return (0, _actions.toggleAll)(e.target.checked);
 						}, checked: this.props.isAllCompleted }),
 					_react2['default'].createElement(
 						'label',
@@ -737,8 +725,6 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _actions = __webpack_require__(19);
-
-	var _actions2 = _interopRequireDefault(_actions);
 
 	var Filters = (function (_React$Component) {
 		function Filters() {
@@ -816,7 +802,7 @@
 					),
 					_react2['default'].createElement(
 						'button',
-						{ id: 'clear-completed', onClick: _actions2['default'].clearCompleted },
+						{ id: 'clear-completed', onClick: _actions.clearCompleted },
 						this.getCompletedCount()
 					)
 				);
@@ -6713,7 +6699,7 @@
 	var ReactFragment = __webpack_require__(55);
 	var ReactPropTypeLocationNames = __webpack_require__(63);
 
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 
 	/**
 	 * Collection of methods that allow declaration and validation of props that are
@@ -7062,7 +7048,7 @@
 
 	'use strict';
 
-	var ReactRef = __webpack_require__(112);
+	var ReactRef = __webpack_require__(113);
 	var ReactElementValidator = __webpack_require__(29);
 
 	/**
@@ -7792,8 +7778,6 @@
 
 	var _actions = __webpack_require__(19);
 
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var ENTER_KEY = 13;
 	var ESCAPE_KEY = 27;
 
@@ -7848,17 +7832,12 @@
 		}, {
 			key: 'handleDblclick',
 			value: function handleDblclick() {
-				var editor = this.refs.editor.getDOMNode();
+				var editor = _react2['default'].findDOMNode(this.refs.editor);
 				editor.value = this.props.title;
 				this.setState({
 					onEdit: true
 				});
 				setTimeout(editor.focus.bind(editor), 20);
-			}
-		}, {
-			key: 'removeTodo',
-			value: function removeTodo() {
-				_actions2['default'].removeTodo(this.props.id);
 			}
 		}, {
 			key: 'toggleTodo',
@@ -7870,7 +7849,7 @@
 		}, {
 			key: 'updateTodo',
 			value: function updateTodo(options) {
-				_actions2['default'].updateTodo({
+				(0, _actions.updateTodo)({
 					id: this.props.id,
 					title: options.title || this.props.title,
 					time: options.time || this.props.time,
@@ -7899,7 +7878,7 @@
 							this.props.title
 						),
 						_react2['default'].createElement('button', { className: 'destroy', onClick: function () {
-								return _this.removeTodo();
+								return (0, _actions.removeTodo)(_this.props.id);
 							} })
 					),
 					_react2['default'].createElement('input', { className: 'edit', onBlur: function (e) {
@@ -8717,7 +8696,7 @@
 
 	"use strict";
 
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 
 	/**
 	 * Similar to invariant but only logs a warning if the condition is not met.
@@ -11736,7 +11715,7 @@
 
 	var EventConstants = __webpack_require__(52);
 
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 
 	var topLevelTypes = EventConstants.topLevelTypes;
 
@@ -11834,7 +11813,7 @@
 	var Transaction = __webpack_require__(131);
 
 	var assign = __webpack_require__(39);
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 
 	var RESET_BATCHED_UPDATES = {
 	  initialize: emptyFunction,
@@ -15921,6 +15900,44 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
+	 * @providesModule emptyFunction
+	 */
+
+	function makeEmptyFunction(arg) {
+	  return function() {
+	    return arg;
+	  };
+	}
+
+	/**
+	 * This function accepts and discards inputs; it has no side effects. This is
+	 * primarily useful idiomatically for overridable function endpoints which
+	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+	 */
+	function emptyFunction() {}
+
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function() { return this; };
+	emptyFunction.thatReturnsArgument = function(arg) { return arg; };
+
+	module.exports = emptyFunction;
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
 	 * @providesModule ReactRef
 	 */
 
@@ -15985,44 +16002,6 @@
 
 
 /***/ },
-/* 113 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule emptyFunction
-	 */
-
-	function makeEmptyFunction(arg) {
-	  return function() {
-	    return arg;
-	  };
-	}
-
-	/**
-	 * This function accepts and discards inputs; it has no side effects. This is
-	 * primarily useful idiomatically for overridable function endpoints which
-	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-	 */
-	function emptyFunction() {}
-
-	emptyFunction.thatReturns = makeEmptyFunction;
-	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-	emptyFunction.thatReturnsThis = function() { return this; };
-	emptyFunction.thatReturnsArgument = function(arg) { return arg; };
-
-	module.exports = emptyFunction;
-
-
-/***/ },
 /* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -16046,7 +16025,7 @@
 	var Transaction = __webpack_require__(131);
 
 	var assign = __webpack_require__(39);
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 
 	/**
 	 * Provides a `CallbackQueue` queue for collecting `onDOMReady` callbacks
@@ -16380,13 +16359,13 @@
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(168);
+	var CSSProperty = __webpack_require__(166);
 	var ExecutionEnvironment = __webpack_require__(42);
 
-	var camelizeStyleName = __webpack_require__(169);
-	var dangerousStyleValue = __webpack_require__(170);
-	var hyphenateStyleName = __webpack_require__(171);
-	var memoizeStringOnly = __webpack_require__(172);
+	var camelizeStyleName = __webpack_require__(167);
+	var dangerousStyleValue = __webpack_require__(168);
+	var hyphenateStyleName = __webpack_require__(169);
+	var memoizeStringOnly = __webpack_require__(170);
 	var warning = __webpack_require__(57);
 
 	var processStyleName = memoizeStringOnly(function(styleName) {
@@ -16566,10 +16545,10 @@
 	'use strict';
 
 	var ReactComponentEnvironment = __webpack_require__(139);
-	var ReactMultiChildUpdateTypes = __webpack_require__(166);
+	var ReactMultiChildUpdateTypes = __webpack_require__(171);
 
 	var ReactReconciler = __webpack_require__(37);
-	var ReactChildReconciler = __webpack_require__(167);
+	var ReactChildReconciler = __webpack_require__(172);
 
 	/**
 	 * Updating children of a component may trigger recursive updates. The depth is
@@ -17070,8 +17049,8 @@
 	var EventConstants = __webpack_require__(52);
 	var EventPluginHub = __webpack_require__(127);
 
-	var accumulateInto = __webpack_require__(173);
-	var forEachAccumulated = __webpack_require__(174);
+	var accumulateInto = __webpack_require__(174);
+	var forEachAccumulated = __webpack_require__(175);
 
 	var PropagationPhases = EventConstants.PropagationPhases;
 	var getListener = EventPluginHub.getListener;
@@ -17216,7 +17195,7 @@
 	var PooledClass = __webpack_require__(54);
 
 	var assign = __webpack_require__(39);
-	var getTextContentAccessor = __webpack_require__(175);
+	var getTextContentAccessor = __webpack_require__(173);
 
 	/**
 	 * This helper class stores information about text content of a target node,
@@ -17409,8 +17388,8 @@
 	var EventPluginRegistry = __webpack_require__(155);
 	var EventPluginUtils = __webpack_require__(22);
 
-	var accumulateInto = __webpack_require__(173);
-	var forEachAccumulated = __webpack_require__(174);
+	var accumulateInto = __webpack_require__(174);
+	var forEachAccumulated = __webpack_require__(175);
 	var invariant = __webpack_require__(53);
 
 	/**
@@ -17691,7 +17670,7 @@
 	var PooledClass = __webpack_require__(54);
 
 	var assign = __webpack_require__(39);
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 	var getEventTarget = __webpack_require__(137);
 
 	/**
@@ -18266,8 +18245,8 @@
 
 	var ReactBrowserEventEmitter = __webpack_require__(103);
 
-	var accumulateInto = __webpack_require__(173);
-	var forEachAccumulated = __webpack_require__(174);
+	var accumulateInto = __webpack_require__(174);
+	var forEachAccumulated = __webpack_require__(175);
 	var invariant = __webpack_require__(53);
 
 	function remove(event) {
@@ -18326,7 +18305,7 @@
 	'use strict';
 
 	var Danger = __webpack_require__(178);
-	var ReactMultiChildUpdateTypes = __webpack_require__(166);
+	var ReactMultiChildUpdateTypes = __webpack_require__(171);
 
 	var setTextContent = __webpack_require__(179);
 	var invariant = __webpack_require__(53);
@@ -18630,7 +18609,7 @@
 	 * @typechecks
 	 */
 
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 
 	/**
 	 * Upstream version of event listener. Does not take into account specific
@@ -21506,174 +21485,6 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule ReactMultiChildUpdateTypes
-	 */
-
-	'use strict';
-
-	var keyMirror = __webpack_require__(64);
-
-	/**
-	 * When a component's children are updated, a series of update configuration
-	 * objects are created in order to batch and serialize the required changes.
-	 *
-	 * Enumerates all the possible types of update configurations.
-	 *
-	 * @internal
-	 */
-	var ReactMultiChildUpdateTypes = keyMirror({
-	  INSERT_MARKUP: null,
-	  MOVE_EXISTING: null,
-	  REMOVE_NODE: null,
-	  TEXT_CONTENT: null
-	});
-
-	module.exports = ReactMultiChildUpdateTypes;
-
-
-/***/ },
-/* 167 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2014-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactChildReconciler
-	 * @typechecks static-only
-	 */
-
-	'use strict';
-
-	var ReactReconciler = __webpack_require__(37);
-
-	var flattenChildren = __webpack_require__(185);
-	var instantiateReactComponent = __webpack_require__(109);
-	var shouldUpdateReactComponent = __webpack_require__(111);
-
-	/**
-	 * ReactChildReconciler provides helpers for initializing or updating a set of
-	 * children. Its output is suitable for passing it onto ReactMultiChild which
-	 * does diffed reordering and insertion.
-	 */
-	var ReactChildReconciler = {
-
-	  /**
-	   * Generates a "mount image" for each of the supplied children. In the case
-	   * of `ReactDOMComponent`, a mount image is a string of markup.
-	   *
-	   * @param {?object} nestedChildNodes Nested child maps.
-	   * @return {?object} A set of child instances.
-	   * @internal
-	   */
-	  instantiateChildren: function(nestedChildNodes, transaction, context) {
-	    var children = flattenChildren(nestedChildNodes);
-	    for (var name in children) {
-	      if (children.hasOwnProperty(name)) {
-	        var child = children[name];
-	        // The rendered children must be turned into instances as they're
-	        // mounted.
-	        var childInstance = instantiateReactComponent(child, null);
-	        children[name] = childInstance;
-	      }
-	    }
-	    return children;
-	  },
-
-	  /**
-	   * Updates the rendered children and returns a new set of children.
-	   *
-	   * @param {?object} prevChildren Previously initialized set of children.
-	   * @param {?object} nextNestedChildNodes Nested child maps.
-	   * @param {ReactReconcileTransaction} transaction
-	   * @param {object} context
-	   * @return {?object} A new set of child instances.
-	   * @internal
-	   */
-	  updateChildren: function(
-	    prevChildren,
-	    nextNestedChildNodes,
-	    transaction,
-	    context) {
-	    // We currently don't have a way to track moves here but if we use iterators
-	    // instead of for..in we can zip the iterators and check if an item has
-	    // moved.
-	    // TODO: If nothing has changed, return the prevChildren object so that we
-	    // can quickly bailout if nothing has changed.
-	    var nextChildren = flattenChildren(nextNestedChildNodes);
-	    if (!nextChildren && !prevChildren) {
-	      return null;
-	    }
-	    var name;
-	    for (name in nextChildren) {
-	      if (!nextChildren.hasOwnProperty(name)) {
-	        continue;
-	      }
-	      var prevChild = prevChildren && prevChildren[name];
-	      var prevElement = prevChild && prevChild._currentElement;
-	      var nextElement = nextChildren[name];
-	      if (shouldUpdateReactComponent(prevElement, nextElement)) {
-	        ReactReconciler.receiveComponent(
-	          prevChild, nextElement, transaction, context
-	        );
-	        nextChildren[name] = prevChild;
-	      } else {
-	        if (prevChild) {
-	          ReactReconciler.unmountComponent(prevChild, name);
-	        }
-	        // The child must be instantiated before it's mounted.
-	        var nextChildInstance = instantiateReactComponent(
-	          nextElement,
-	          null
-	        );
-	        nextChildren[name] = nextChildInstance;
-	      }
-	    }
-	    // Unmount children that are no longer present.
-	    for (name in prevChildren) {
-	      if (prevChildren.hasOwnProperty(name) &&
-	          !(nextChildren && nextChildren.hasOwnProperty(name))) {
-	        ReactReconciler.unmountComponent(prevChildren[name]);
-	      }
-	    }
-	    return nextChildren;
-	  },
-
-	  /**
-	   * Unmounts all rendered children. This should be used to clean up children
-	   * when this component is unmounted.
-	   *
-	   * @param {?object} renderedChildren Previously initialized set of children.
-	   * @internal
-	   */
-	  unmountChildren: function(renderedChildren) {
-	    for (var name in renderedChildren) {
-	      var renderedChild = renderedChildren[name];
-	      ReactReconciler.unmountComponent(renderedChild);
-	    }
-	  }
-
-	};
-
-	module.exports = ReactChildReconciler;
-
-
-/***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
 	 * @providesModule CSSProperty
 	 */
 
@@ -21792,7 +21603,7 @@
 
 
 /***/ },
-/* 169 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21809,7 +21620,7 @@
 
 	"use strict";
 
-	var camelize = __webpack_require__(186);
+	var camelize = __webpack_require__(185);
 
 	var msPattern = /^-ms-/;
 
@@ -21838,7 +21649,7 @@
 
 
 /***/ },
-/* 170 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21855,7 +21666,7 @@
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(168);
+	var CSSProperty = __webpack_require__(166);
 
 	var isUnitlessNumber = CSSProperty.isUnitlessNumber;
 
@@ -21900,7 +21711,7 @@
 
 
 /***/ },
-/* 171 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21917,7 +21728,7 @@
 
 	"use strict";
 
-	var hyphenate = __webpack_require__(187);
+	var hyphenate = __webpack_require__(186);
 
 	var msPattern = /^ms-/;
 
@@ -21945,7 +21756,7 @@
 
 
 /***/ },
-/* 172 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21982,7 +21793,216 @@
 
 
 /***/ },
+/* 171 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactMultiChildUpdateTypes
+	 */
+
+	'use strict';
+
+	var keyMirror = __webpack_require__(64);
+
+	/**
+	 * When a component's children are updated, a series of update configuration
+	 * objects are created in order to batch and serialize the required changes.
+	 *
+	 * Enumerates all the possible types of update configurations.
+	 *
+	 * @internal
+	 */
+	var ReactMultiChildUpdateTypes = keyMirror({
+	  INSERT_MARKUP: null,
+	  MOVE_EXISTING: null,
+	  REMOVE_NODE: null,
+	  TEXT_CONTENT: null
+	});
+
+	module.exports = ReactMultiChildUpdateTypes;
+
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactChildReconciler
+	 * @typechecks static-only
+	 */
+
+	'use strict';
+
+	var ReactReconciler = __webpack_require__(37);
+
+	var flattenChildren = __webpack_require__(187);
+	var instantiateReactComponent = __webpack_require__(109);
+	var shouldUpdateReactComponent = __webpack_require__(111);
+
+	/**
+	 * ReactChildReconciler provides helpers for initializing or updating a set of
+	 * children. Its output is suitable for passing it onto ReactMultiChild which
+	 * does diffed reordering and insertion.
+	 */
+	var ReactChildReconciler = {
+
+	  /**
+	   * Generates a "mount image" for each of the supplied children. In the case
+	   * of `ReactDOMComponent`, a mount image is a string of markup.
+	   *
+	   * @param {?object} nestedChildNodes Nested child maps.
+	   * @return {?object} A set of child instances.
+	   * @internal
+	   */
+	  instantiateChildren: function(nestedChildNodes, transaction, context) {
+	    var children = flattenChildren(nestedChildNodes);
+	    for (var name in children) {
+	      if (children.hasOwnProperty(name)) {
+	        var child = children[name];
+	        // The rendered children must be turned into instances as they're
+	        // mounted.
+	        var childInstance = instantiateReactComponent(child, null);
+	        children[name] = childInstance;
+	      }
+	    }
+	    return children;
+	  },
+
+	  /**
+	   * Updates the rendered children and returns a new set of children.
+	   *
+	   * @param {?object} prevChildren Previously initialized set of children.
+	   * @param {?object} nextNestedChildNodes Nested child maps.
+	   * @param {ReactReconcileTransaction} transaction
+	   * @param {object} context
+	   * @return {?object} A new set of child instances.
+	   * @internal
+	   */
+	  updateChildren: function(
+	    prevChildren,
+	    nextNestedChildNodes,
+	    transaction,
+	    context) {
+	    // We currently don't have a way to track moves here but if we use iterators
+	    // instead of for..in we can zip the iterators and check if an item has
+	    // moved.
+	    // TODO: If nothing has changed, return the prevChildren object so that we
+	    // can quickly bailout if nothing has changed.
+	    var nextChildren = flattenChildren(nextNestedChildNodes);
+	    if (!nextChildren && !prevChildren) {
+	      return null;
+	    }
+	    var name;
+	    for (name in nextChildren) {
+	      if (!nextChildren.hasOwnProperty(name)) {
+	        continue;
+	      }
+	      var prevChild = prevChildren && prevChildren[name];
+	      var prevElement = prevChild && prevChild._currentElement;
+	      var nextElement = nextChildren[name];
+	      if (shouldUpdateReactComponent(prevElement, nextElement)) {
+	        ReactReconciler.receiveComponent(
+	          prevChild, nextElement, transaction, context
+	        );
+	        nextChildren[name] = prevChild;
+	      } else {
+	        if (prevChild) {
+	          ReactReconciler.unmountComponent(prevChild, name);
+	        }
+	        // The child must be instantiated before it's mounted.
+	        var nextChildInstance = instantiateReactComponent(
+	          nextElement,
+	          null
+	        );
+	        nextChildren[name] = nextChildInstance;
+	      }
+	    }
+	    // Unmount children that are no longer present.
+	    for (name in prevChildren) {
+	      if (prevChildren.hasOwnProperty(name) &&
+	          !(nextChildren && nextChildren.hasOwnProperty(name))) {
+	        ReactReconciler.unmountComponent(prevChildren[name]);
+	      }
+	    }
+	    return nextChildren;
+	  },
+
+	  /**
+	   * Unmounts all rendered children. This should be used to clean up children
+	   * when this component is unmounted.
+	   *
+	   * @param {?object} renderedChildren Previously initialized set of children.
+	   * @internal
+	   */
+	  unmountChildren: function(renderedChildren) {
+	    for (var name in renderedChildren) {
+	      var renderedChild = renderedChildren[name];
+	      ReactReconciler.unmountComponent(renderedChild);
+	    }
+	  }
+
+	};
+
+	module.exports = ReactChildReconciler;
+
+
+/***/ },
 /* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule getTextContentAccessor
+	 */
+
+	'use strict';
+
+	var ExecutionEnvironment = __webpack_require__(42);
+
+	var contentKey = null;
+
+	/**
+	 * Gets the key used to access text content on a DOM node.
+	 *
+	 * @return {?string} Key used to access text content.
+	 * @internal
+	 */
+	function getTextContentAccessor() {
+	  if (!contentKey && ExecutionEnvironment.canUseDOM) {
+	    // Prefer textContent to innerText because many browsers support both but
+	    // SVG <text> elements don't support innerText even when <div> does.
+	    contentKey = 'textContent' in document.documentElement ?
+	      'textContent' :
+	      'innerText';
+	  }
+	  return contentKey;
+	}
+
+	module.exports = getTextContentAccessor;
+
+
+/***/ },
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -22051,7 +22071,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -22083,47 +22103,6 @@
 	};
 
 	module.exports = forEachAccumulated;
-
-
-/***/ },
-/* 175 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule getTextContentAccessor
-	 */
-
-	'use strict';
-
-	var ExecutionEnvironment = __webpack_require__(42);
-
-	var contentKey = null;
-
-	/**
-	 * Gets the key used to access text content on a DOM node.
-	 *
-	 * @return {?string} Key used to access text content.
-	 * @internal
-	 */
-	function getTextContentAccessor() {
-	  if (!contentKey && ExecutionEnvironment.canUseDOM) {
-	    // Prefer textContent to innerText because many browsers support both but
-	    // SVG <text> elements don't support innerText even when <div> does.
-	    contentKey = 'textContent' in document.documentElement ?
-	      'textContent' :
-	      'innerText';
-	  }
-	  return contentKey;
-	}
-
-	module.exports = getTextContentAccessor;
 
 
 /***/ },
@@ -22233,7 +22212,7 @@
 	var ExecutionEnvironment = __webpack_require__(42);
 
 	var createNodesFromMarkup = __webpack_require__(188);
-	var emptyFunction = __webpack_require__(113);
+	var emptyFunction = __webpack_require__(112);
 	var getMarkupWrap = __webpack_require__(189);
 	var invariant = __webpack_require__(53);
 
@@ -22466,7 +22445,7 @@
 	var ExecutionEnvironment = __webpack_require__(42);
 
 	var getNodeForCharacterOffset = __webpack_require__(190);
-	var getTextContentAccessor = __webpack_require__(175);
+	var getTextContentAccessor = __webpack_require__(173);
 
 	/**
 	 * While `isCollapsed` is available on the Selection object and `collapsed`
@@ -22833,6 +22812,79 @@
 /* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule camelize
+	 * @typechecks
+	 */
+
+	var _hyphenPattern = /-(.)/g;
+
+	/**
+	 * Camelcases a hyphenated string, for example:
+	 *
+	 *   > camelize('background-color')
+	 *   < "backgroundColor"
+	 *
+	 * @param {string} string
+	 * @return {string}
+	 */
+	function camelize(string) {
+	  return string.replace(_hyphenPattern, function(_, character) {
+	    return character.toUpperCase();
+	  });
+	}
+
+	module.exports = camelize;
+
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule hyphenate
+	 * @typechecks
+	 */
+
+	var _uppercasePattern = /([A-Z])/g;
+
+	/**
+	 * Hyphenates a camelcased string, for example:
+	 *
+	 *   > hyphenate('backgroundColor')
+	 *   < "background-color"
+	 *
+	 * For CSS style names, use `hyphenateStyleName` instead which works properly
+	 * with all vendor prefixes, including `ms`.
+	 *
+	 * @param {string} string
+	 * @return {string}
+	 */
+	function hyphenate(string) {
+	  return string.replace(_uppercasePattern, '-$1').toLowerCase();
+	}
+
+	module.exports = hyphenate;
+
+
+/***/ },
+/* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(process) {/**
 	 * Copyright 2013-2015, Facebook, Inc.
 	 * All rights reserved.
@@ -22889,79 +22941,6 @@
 	module.exports = flattenChildren;
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
-
-/***/ },
-/* 186 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule camelize
-	 * @typechecks
-	 */
-
-	var _hyphenPattern = /-(.)/g;
-
-	/**
-	 * Camelcases a hyphenated string, for example:
-	 *
-	 *   > camelize('background-color')
-	 *   < "backgroundColor"
-	 *
-	 * @param {string} string
-	 * @return {string}
-	 */
-	function camelize(string) {
-	  return string.replace(_hyphenPattern, function(_, character) {
-	    return character.toUpperCase();
-	  });
-	}
-
-	module.exports = camelize;
-
-
-/***/ },
-/* 187 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule hyphenate
-	 * @typechecks
-	 */
-
-	var _uppercasePattern = /([A-Z])/g;
-
-	/**
-	 * Hyphenates a camelcased string, for example:
-	 *
-	 *   > hyphenate('backgroundColor')
-	 *   < "background-color"
-	 *
-	 * For CSS style names, use `hyphenateStyleName` instead which works properly
-	 * with all vendor prefixes, including `ms`.
-	 *
-	 * @param {string} string
-	 * @return {string}
-	 */
-	function hyphenate(string) {
-	  return string.replace(_uppercasePattern, '-$1').toLowerCase();
-	}
-
-	module.exports = hyphenate;
-
 
 /***/ },
 /* 188 */

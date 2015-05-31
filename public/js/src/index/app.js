@@ -3,7 +3,7 @@ import todoDispatcher from './todoDispatcher'
 import Model from './model'
 import View from './component/view'
 import request from 'superagent'
-window.request = request
+
 class App {
 	constructor(View, Model) {
 		this.View = View
@@ -18,6 +18,7 @@ class App {
 		this.register()
 		this.listen()
 		window.addEventListener('hashchange', () => this.render(), false)
+		window.request = request
 	}
 	getInitialData() {
 		let initialDataStore = document.getElementById('initialData')

@@ -1,5 +1,5 @@
 import React from 'react'
-import actions from '../actions'
+import {clearCompleted} from '../actions'
 export default class Filters extends React.Component {
 	getClassName(name) {
 		return this.props.hash === name ? 'selected' : ''
@@ -31,7 +31,7 @@ export default class Filters extends React.Component {
 						<a href="#/completed" className={this.getClassName('/completed')}>Completed</a>
 					</li>
 				</ul>
-				<button id="clear-completed" onClick={actions.clearCompleted}>{this.getCompletedCount()}</button>
+				<button id="clear-completed" onClick={clearCompleted}>{this.getCompletedCount()}</button>
 			</footer>
 			)
 	}

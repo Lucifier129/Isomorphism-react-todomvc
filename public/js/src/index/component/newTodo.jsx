@@ -1,17 +1,17 @@
 import React from 'react'
-import actions from '../actions'
-let ENTER_KEY = 13
-let ESCAPE_KEY = 27
+import {addTodo} from '../actions'
+const ENTER_KEY = 13
+const ESCAPE_KEY = 27
 export default class NewTodo extends React.Component {
 	handleBlur(e) {
-		var title = e.target.value.trim()
+		let title = e.target.value.trim()
 		if (title) {
-			actions.addTodo(title)
+			addTodo(title)
 			e.target.value = ''
 		}
 	}
 	handleKeyup(e) {
-		var keyCode = e.keyCode
+		let keyCode = e.keyCode
 		if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
 			this.handleBlur(e)
 		}

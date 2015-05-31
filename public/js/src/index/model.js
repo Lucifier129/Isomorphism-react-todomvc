@@ -70,7 +70,7 @@ export default class Model {
 		})
 	}
 	toggleAll(state) {
-		var todos = this.getTodos()
+		let todos = this.getTodos()
 		if (todos.length === 0) {
 			return false
 		}
