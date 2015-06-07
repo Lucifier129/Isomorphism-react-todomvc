@@ -21,25 +21,6 @@ var delConfig = {
     path: ['public/js/dest/**/*.js']
 }
 
-function hanldePromiseList(promiseList, message) {
-    var total = promiseList.length
-    var promise
-
-    if (total === 0) {
-        promise = Promise.resolve('nothing')
-    } else if (total === 1) {
-        promise = promiseList[0]
-    } else if (total >= 2) {
-        promise = Promise.all(promiseList)
-    }
-
-    return promise.then(function() {
-        console.log(message || 'done')
-    }).catch(function(err) {
-        console.log(err)
-    })
-}
-
 gulp.task('clean', function(cb) {
     del(delConfig.path, cb)
 })
@@ -67,7 +48,7 @@ gulp.task('build', ['clean'], function() {
         promiseList.push(promise)
     })
 
-    return hanldePromiseList(promiseList, 'build task done')
+    return Promise.all(promiseList, 'build task done')
 })
 
 
