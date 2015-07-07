@@ -7,19 +7,13 @@
       "id": 1432537213050,
       "title": "react",
       "time": "2015/5/25",
-      "completed": false
-    },
-    {
-      "id": 1432537215513,
-      "title": "flux",
-      "time": "2015/5/25",
       "completed": true
     },
     {
       "id": 1432537220265,
       "title": "babel",
       "time": "2015/5/25",
-      "completed": true
+      "completed": false
     },
     {
       "id": 1432537224650,
@@ -31,7 +25,7 @@
       "id": 1432537226554,
       "title": "gulp",
       "time": "2015/5/25",
-      "completed": true
+      "completed": false
     },
     {
       "id": 1432537227865,
@@ -43,7 +37,7 @@
       "id": 1432537229769,
       "title": "lowdb",
       "time": "2015/5/25",
-      "completed": false
+      "completed": true
     },
     {
       "id": 1432537236665,
@@ -55,7 +49,13 @@
       "id": 1432537263449,
       "title": "socket.io",
       "time": "2015/5/25",
-      "completed": false
+      "completed": true
+    },
+    {
+      "id": 1436260714696,
+      "title": "asdfasdf",
+      "time": "2015/7/7",
+      "completed": true
     }
   ],
   "js": []

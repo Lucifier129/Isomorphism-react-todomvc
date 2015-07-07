@@ -4,10 +4,10 @@ const ENTER_KEY = 13
 const ESCAPE_KEY = 27
 export default class NewTodo extends React.Component {
 	handleBlur(e) {
-		let title = e.target.value.trim()
+		let title = e.currentTarget.value.trim()
 		if (title) {
 			addTodo(title)
-			e.target.value = ''
+			e.currentTarget.value = ''
 		}
 	}
 	handleKeyup(e) {
@@ -25,7 +25,7 @@ export default class NewTodo extends React.Component {
 					placeholder="What needs to be done?"
 					onBlur={(e) => this.handleBlur(e)}
 					onKeyUp={(e) => this.handleKeyup(e)}
-					autofocus />
+					autoFocus={true} />
 			</header>
 			)
 	}

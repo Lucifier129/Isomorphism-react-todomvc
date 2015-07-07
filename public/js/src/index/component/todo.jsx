@@ -21,7 +21,7 @@ export default class Todo extends React.Component {
 		return className.join(' ')
 	}
 	handleBlur(e) {
-		let newTitle = e.target.value.trim()
+		let newTitle = e.currentTarget.value.trim()
 		this.setState({
 			onEdit: false
 		})
@@ -41,7 +41,7 @@ export default class Todo extends React.Component {
 		}
 	}
 	handleDblclick() {
-		let editor = React.findDOMNode(this.refs.editor)
+		let editor = this.refs.editor
 		editor.value = this.props.title
 		this.setState({
 			onEdit: true
@@ -50,7 +50,7 @@ export default class Todo extends React.Component {
 	}
 	toggleTodo(e) {
 		this.updateTodo({
-			completed: e.target.checked
+			completed: e.currentTarget.checked
 		})
 	}
 	updateTodo(options) {
@@ -63,7 +63,7 @@ export default class Todo extends React.Component {
 	}
 	render() {
 		return (
-			<li className={this.getClassName()} title={this.props.time}>
+			<li key={this.props.key} className={this.getClassName()} title={this.props.time} style={this.props.style}>
 				<div className="view">
 					<input className="toggle" type="checkbox" onChange={(e) => this.toggleTodo(e)} checked={this.props.completed} />
 					<label onDoubleClick={(e) => this.handleDblclick(e)}>{this.props.title}</label>

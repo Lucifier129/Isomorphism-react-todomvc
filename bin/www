@@ -12,7 +12,7 @@ import connect from '../database/connect'
  * Get port from environment and store in Express.
  */
 
-let port = normalizePort(process.env.PORT || '3000');
+let port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 /**
  * Listen on provided port, on all network interfaces.
@@ -83,4 +83,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('pratise:server')('Listening on ' + bind);
+  console.log('serve start on: %s', bind)
 }

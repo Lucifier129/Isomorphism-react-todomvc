@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOMServer from 'react-dom/server'
 import Model from '../public/js/src/index/model'
 import View from '../public/js/src/index/component/view'
 import low from 'lowdb'
@@ -14,7 +15,7 @@ export default {
 	},
 	getComponent() {
 		let data = new Model(db('todos')).getData('/')
-		let component = React.renderToString(React.createElement(View, data))
+		let component = ReactDOMServer.renderToString(React.createElement(View, data))
 		return {
 			component: component,
 			initialData: JSON.stringify(data)

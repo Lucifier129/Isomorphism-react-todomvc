@@ -1,24 +1,22 @@
-module.exports = {
-  cache: true,
+var path = require('path')
 
+module.exports = {
+  watch: true,
   entry: {
     'index': ['index/app.js'],
   },
-
   output: {
+    path: path.join(__dirname, 'public/js/dest'),
     filename: '[name].bundle.js'
   },
-
   module: {
     loaders: [
-      // { test: /\.jsx$/, exclude: /node_modules/, loader: "jsx-loader?harmony"},
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader?optional[]=runtime'}
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader?stage=0&optional[]=runtime'}
     ]
   },
   resolve: {
-    // you can now require('file') instead of require('file.coffee')
     extensions: ["", ".js", ".jsx", '.es6'],
-    root: __dirname + '/public/js/src',
+    root: path.join(__dirname, '/public/js/src'),
     modulesDirectories: ["node_modules"]
   }
 }

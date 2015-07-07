@@ -1,24 +1,22 @@
 import React from 'react'
+import ReactDom from 'react-dom'
 import todoDispatcher from './todoDispatcher'
 import Model from './model'
 import View from './component/view'
 import request from 'superagent'
 
 class App {
-	constructor(View, Model) {
-		this.View = View
-		this.Model = Model
+	constructor() {
 		this.url = '/todos'
 	}
 	init() {
-		this.model = new this.Model(this.getInitialData().todos)
+		this.model = new Model(this.getInitialData().todos)
 		//初始化渲染，获取服务端vdom tree
 		this.render(this.model.getData('/'))
 		this.render()
 		this.register()
 		this.listen()
 		window.addEventListener('hashchange', () => this.render(), false)
-		window.request = request
 	}
 	getInitialData() {
 		let initialDataStore = document.getElementById('initialData')
@@ -33,6 +31,7 @@ class App {
 		todoDispatcher.register((action) => {
 			let model = this.model
 			let todo
+			let hasTodo
 			switch (action.actionType) {
 				case 'addTodo':
 					todo = model.addTodo(action.title)
@@ -42,7 +41,7 @@ class App {
 					})
 					break
 				case 'toggleAll':
-					let hasTodo = model.toggleAll(action.completed)
+					hasTodo = model.toggleAll(action.completed)
 					if (hasTodo !== false) {
 						this.post({
 							type: 'toggleAll',
@@ -65,7 +64,7 @@ class App {
 					}).end()
 					break
 				case 'clearCompleted':
-					let hasTodo = model.clearCompleted()
+					hasTodo = model.clearCompleted()
 					if (hasTodo) {
 						this.post({
 							type: 'clearCompleted'
@@ -78,8 +77,8 @@ class App {
 	}
 	render(props) {
 		props = props || this.model.getData('/' + location.hash.replace('#/', ''))
-		React.render(
-			<this.View {...props} />,
+		ReactDom.render(
+			React.createElement(View, props),
 			document.getElementById('todoapp')
 		)
 	}
@@ -92,4 +91,4 @@ class App {
 	}
 }
 
-new App(View, Model).init()
+new App().init()
