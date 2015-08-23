@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import Todo from './todo'
+import Todo from './Todo'
 
 export default class Todos extends React.Component {
 	render() {
