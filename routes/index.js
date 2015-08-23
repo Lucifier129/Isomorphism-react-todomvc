@@ -11,32 +11,17 @@ let ok = {
 }
 
 router.get('/', (req, res) => {
-	res.render('index', store.getComponent())
+	res.render('index', {
+		component: store.getComponent(),
+		initialData: JSON.stringify(store.getState())
+	})
 })
 
 router.post('/todos', (req, res) => {
-	switch (req.body.type) {
-		case 'addTodo':
-			store.addTodo(req.body.todo)
-			break
-		case 'toggleAll':
-			store.toggleAll(req.body.completed)
-			break
-		case 'clearCompleted':
-			store.clearCompleted()
-			break
-	}
-	res.send(ok)
-})
-
-router.patch('/todos', (req, res) => {
-	store.updateTodo(req.body.todo)
-	res.send(ok)
-})
-
-router.delete('/todos', (req, res) => {
-	store.removeTodo(req.body.id)
-	res.send(ok)
+	store.dispatch(req.body)
+	res.json(Object.assign({}, ok, {
+		data: req.body
+	}))
 })
 
 export default router

@@ -6,21 +6,24 @@
 
 import debug from 'debug'
 import app from '../app'
-import connect from '../database/connect'
+import store from '../database/todos-store'
+import socketIO from 'socket.io'
 
 /**
  * Get port from environment and store in Express.
  */
 
-let port = normalizePort(process.env.PORT || '3001');
+let port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 let server = require('http').createServer(app);
+let io = socketIO(server)
 
-connect(server)
+store.subscribe(() => io.emit('change', store.getState()))
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

@@ -1,49 +1,17 @@
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import Model from '../public/js/src/index/model'
-import View from '../public/js/src/index/component/view'
-import low from 'lowdb'
-let db = low('./database/db.json')
+import { createStore, applyMiddleware } from 'redux'
+import rootReducers from '../public/js/src/index/reducers'
+import db from './db.json'
 
-export default {
-	emit() {
-		if (this.io) {
-			this.io.emit('change', {
-				todos: db('todos')
-			})
-		}
-	},
-	getComponent() {
-		let data = new Model(db('todos')).getData('/')
-		let component = ReactDOMServer.renderToString(React.createElement(View, data))
-		return {
-			component: component,
-			initialData: JSON.stringify(data)
-		}
-	},
-	addTodo(todo) {
-		db('todos').push(todo)
-		db.save()
-		this.emit()
-	},
-	toggleAll(completed) {
-		new Model(db('todos')).toggleAll(completed)
-		db.save()
-		this.emit()
-	},
-	clearCompleted() {
-		db('todos').remove((todo) => todo.completed)
-		db.save()
-		this.emit()
-	},
-	updateTodo(todo) {
-		new Model(db('todos')).updateTodo(todo)
-		db.save()
-		this.emit()
-	},
-	removeTodo(id) {
-		new Model(db('todos')).removeTodo(id)
-		db.save()
-		this.emit()
-	}
+import React from 'react'
+import View from '../public/js/src/index/components/View'
+import { stateToProps, dispatchToProps } from '../public/js/src/index/containers/TodoApp'
+
+let store = createStore(rootReducers, { todos: [] })
+
+store.getComponent = () => {
+	let props = stateToProps(store.getState())
+	let actions = dispatchToProps(() => {})
+	return React.renderToString(<View {...props} {...actions} />)
 }
+
+export default store
