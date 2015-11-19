@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin')
 module.exports = {
     watch: true,
     entry: {
@@ -19,11 +20,16 @@ module.exports = {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin("vendor", "vendor.bundle.js"),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        })
+        // new ChunkManifestPlugin({
+        // filename: 'webpack-common-manifest.json',
+        //     manfiestVariable: 'webpackBundleManifest',
+        // }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false
+        //     }
+        // }),
+        new webpack.optimize.OccurenceOrderPlugin()
     ],
     resolve: {
         extensions: ["", ".js", ".jsx", '.es6'],
