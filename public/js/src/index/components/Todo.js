@@ -30,7 +30,7 @@ export default class Todo extends Component {
 		}
 	}
 	handleDblclick() {
-		let editor = findDOMNode(this.refs.editor)
+		let editor = this.refs.editor
 		editor.value = this.props.text
 		this.setState({
 			onEdit: true

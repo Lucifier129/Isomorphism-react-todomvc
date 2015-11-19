@@ -1,4 +1,5 @@
 import React from 'react'
+import { render } from 'react-dom'
 import Root from './containers/Root'
 import storeCreator from './store'
 import { SERVER_UPDATE } from './constants/SocketTypes'
@@ -7,7 +8,7 @@ import { FILTER_ITEMS } from './constants/FilterTypes'
 const initialState = JSON.parse(document.getElementById('initialData').innerHTML)
 const store = storeCreator(initialState)
 
-React.render(
+render(
 	<Root store={ store } />,
 	document.getElementById('todoapp')
 )
