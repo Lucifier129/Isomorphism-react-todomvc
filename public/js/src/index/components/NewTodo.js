@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import { ENTER_KEY, ESCAPE_KEY } from '../constants/KeyCode'
+
+const ENTER_KEY = 13
+const ESCAPE_KEY = 27
 
 export default class NewTodo extends Component {
 	checkInput(input) {

@@ -1,26 +1,20 @@
 import React from 'react'
+import { render } from 'react-dom'
 import Root from './containers/Root'
-import storeCreator from './store'
-import { SERVER_UPDATE } from './constants/SocketTypes'
-import { FILTER_ITEMS } from './constants/FilterTypes'
+import store from './store'
 
 const initialState = JSON.parse(document.getElementById('initialData').innerHTML)
-const store = storeCreator(initialState)
+store.replaceState(initialState)
 
-React.render(
+render(
 	<Root store={ store } />,
 	document.getElementById('todoapp')
 )
 
-io().on('change', state => store.dispatch({
-	type: SERVER_UPDATE,
-	state
-}))
+let { updateTodos, filterItems } = store.actions
+let dispatchFilter = () => filterItems(location.hash)
 
-let dispatchFilter = () => store.dispatch({
-	type: FILTER_ITEMS,
-	active: location.hash
-})
+io().on('change', updateTodos)
 
 document.addEventListener('DOMContentLoaded', dispatchFilter)
 window.addEventListener('hashchange', dispatchFilter)

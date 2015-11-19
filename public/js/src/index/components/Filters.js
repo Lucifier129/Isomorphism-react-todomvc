@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-import { SHOW_ALL, SHOW_ACTIVE, SHOW_COMPLETED } from '../constants/FilterTypes'
 
 export default class Filters extends Component {
 	getTodoCount() {
@@ -23,13 +22,13 @@ export default class Filters extends Component {
 				<span id="todo-count">{ this.getTodoCount() }</span>
 				<ul id="filters">
 					<li>
-						<a href="#/" className={ getClassName(SHOW_ALL) }>All</a>
+						<a href="#/" className={ getClassName('SHOW_ALL') }>All</a>
 					</li>
 					<li>
-						<a href="#/active" className={ getClassName(SHOW_ACTIVE) }>Active</a>
+						<a href="#/active" className={ getClassName('SHOW_ACTIVE') }>Active</a>
 					</li>
 					<li>
-						<a href="#/completed" className={ getClassName(SHOW_COMPLETED) }>Completed</a>
+						<a href="#/completed" className={ getClassName('SHOW_COMPLETED') }>Completed</a>
 					</li>
 				</ul>
 				<button id="clear-completed" onClick={ clearCompleted }>{ this.getCompletedCount() }</button>

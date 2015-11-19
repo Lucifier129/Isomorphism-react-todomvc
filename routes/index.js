@@ -18,7 +18,8 @@ router.get('/', (req, res) => {
 })
 
 router.post('/todos', (req, res) => {
-	store.dispatch(req.body)
+	let { key, value } = req.body
+	store.dispatch(key, value)
 	res.json(Object.assign({}, ok, {
 		data: req.body
 	}))

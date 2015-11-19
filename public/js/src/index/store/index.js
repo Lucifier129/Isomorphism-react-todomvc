@@ -1,19 +1,19 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import createLogger from 'redux-logger'
-import restfulMiddleware from '../middleware/restful'
-import rootReducers from '../reducers'
+import { createStore } from 'refer'
+import createLogger from 'refer-logger'
+import * as handlers from '../handlers'
+import * as server from '../middlewares/server'
+import restful from '../middlewares/restful'
+import { createRecord } from '../middlewares/record'
 
-const loggerMiddleware = createLogger({
-  level: 'info',
-  collapsed: true,
-  duration: true
+let record = createRecord(['updateTodos'])
+
+let logger = createLogger({
+	debug: true
 })
+let store = createStore([server, restful, logger, record.recorder, handlers])
 
-const finalStoreCreator = applyMiddleware(
-	loggerMiddleware,
-	restfulMiddleware
-)(createStore)
+record.setStore(store)
 
-export default initialState => {
-	return finalStoreCreator(rootReducers, initialState)
-}
+window.record = record
+
+export default store

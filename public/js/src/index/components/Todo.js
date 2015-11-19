@@ -1,6 +1,8 @@
-import React, { Component, findDOMNode, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-import { ENTER_KEY, ESCAPE_KEY } from '../constants/KeyCode'
+
+const ENTER_KEY = 13
+const ESCAPE_KEY = 27
 
 export default class Todo extends Component {
 	constructor(props, context) {
@@ -30,7 +32,7 @@ export default class Todo extends Component {
 		}
 	}
 	handleDblclick() {
-		let editor = findDOMNode(this.refs.editor)
+		let editor = this.refs.editor
 		editor.value = this.props.text
 		this.setState({
 			onEdit: true

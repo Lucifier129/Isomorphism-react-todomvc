@@ -1,1 +1,0 @@
-export const SERVER_UPDATE = 'SERVER_UPDATE'

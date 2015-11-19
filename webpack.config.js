@@ -4,7 +4,7 @@ module.exports = {
     watch: true,
     entry: {
         'index': 'index',
-        'vendor': ['react', 'redux', 'react-redux', 'classnames', 'whatwg-fetch']
+        'vendor': ['react', 'refer', 'classnames', 'whatwg-fetch']
     },
     output: {
         path: path.join(__dirname, 'public/js/dest'),
@@ -28,6 +28,10 @@ module.exports = {
     resolve: {
         extensions: ["", ".js", ".jsx", '.es6'],
         root: path.join(__dirname, '/public/js/src/'),
-        modulesDirectories: ["node_modules"]
+        modulesDirectories: ["node_modules"],
+        alias: {
+            refer: path.join(path.dirname(__dirname), 'refer'),
+            'refer-logger': path.join(path.dirname(__dirname), 'refer-logger')
+        }
     }
 }

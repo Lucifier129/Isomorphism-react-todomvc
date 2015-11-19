@@ -1,17 +1,15 @@
-import { createStore, applyMiddleware } from 'redux'
-import rootReducers from '../public/js/src/index/reducers'
+import { createStore } from 'refer'
+import React from 'react'
+import { renderToString } from 'react-dom/server'
+import * as handlers from '../public/js/src/index/handlers'
+import Root from '../public/js/src/index/containers/Root'
 import db from './db.json'
 
-import React from 'react'
-import View from '../public/js/src/index/components/View'
-import { stateToProps, dispatchToProps } from '../public/js/src/index/containers/TodoApp'
+let store = createStore(handlers, {
+	todos: [],
+	activeFilter: 'SHOW_ALL'
+})
 
-let store = createStore(rootReducers, { todos: [] })
-
-store.getComponent = () => {
-	let props = stateToProps(store.getState())
-	let actions = dispatchToProps(() => {})
-	return React.renderToString(<View {...props} {...actions} />)
-}
+store.getComponent = () => renderToString(<Root store={store} />)
 
 export default store
