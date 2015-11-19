@@ -24,11 +24,11 @@ module.exports = {
         // filename: 'webpack-common-manifest.json',
         //     manfiestVariable: 'webpackBundleManifest',
         // }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false
-        //     }
-        // }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        }),
         new webpack.optimize.OccurenceOrderPlugin()
     ],
     resolve: {
