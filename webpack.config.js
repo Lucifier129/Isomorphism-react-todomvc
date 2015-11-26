@@ -37,7 +37,8 @@ module.exports = {
         modulesDirectories: ["node_modules"],
         alias: {
             refer: path.join(path.dirname(__dirname), 'refer'),
-            'refer-logger': path.join(path.dirname(__dirname), 'refer-logger')
+            'refer-logger': path.join(path.dirname(__dirname), 'refer-logger'),
+            'react-props': path.join(path.dirname(__dirname), 'react-props')
         }
     }
 }
