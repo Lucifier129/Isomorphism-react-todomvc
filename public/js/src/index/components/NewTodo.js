@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-
+import { injectProps } from 'react-props'
 const ENTER_KEY = 13
 const ESCAPE_KEY = 27
 
+
+
+@injectProps()
 export default class NewTodo extends Component {
 	checkInput(input) {
 		let title = input.value

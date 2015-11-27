@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
+import { injectProps } from 'react-props'
 
+@injectProps()
 export default class Filters extends Component {
 	getTodoCount() {
 		let { todoCount } = this.props

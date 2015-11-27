@@ -19,7 +19,8 @@ router.get('/', (req, res) => {
 
 router.post('/todos', (req, res) => {
 	let { key, value } = req.body
-	store.dispatch(key, value)
+	Promise.resolve(store.dispatch(key, value))
+	.catch(console.log.bind(console))
 	res.json(Object.assign({}, ok, {
 		data: req.body
 	}))

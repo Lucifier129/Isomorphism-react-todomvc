@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import Todo from './Todo'
+import { injectProps } from 'react-props'
 
+@injectProps()
 export default class Todos extends React.Component {
 	render() {
 		let { deleteItem, updateItem, todos } = this.props

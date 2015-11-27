@@ -1,15 +1,22 @@
-import { createStore } from 'refer'
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import * as handlers from '../public/js/src/index/handlers'
+import { createStore } from 'refer'
+// import * as handlers from '../public/js/src/index/handlers'
 import Root from '../public/js/src/index/containers/Root'
-import db from './db.json'
+// import * as selectors from '../public/js/src/index/selectors'
+// import { createInjector, updateState } from 'react-props'
+import store from '../public/js/src/index/store'
 
-let store = createStore(handlers, {
+// let injector = createInjector(selectors)
+// let store = createStore([injector, handlers], {
+// 	activeFilter: 'SHOW_ALL',
+// 	todos: []
+// })
+
+store.getComponent = () => renderToString(<Root />)
+let initialState = {
 	todos: [],
 	activeFilter: 'SHOW_ALL'
-})
-
-store.getComponent = () => renderToString(<Root store={store} />)
-
+}
+store.replaceState(initialState)
 export default store
