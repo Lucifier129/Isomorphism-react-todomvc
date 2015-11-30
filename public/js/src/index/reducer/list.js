@@ -1,11 +1,11 @@
 import { ADD_ITEM, DELETE_ITEM, UPDATE_ITEM, DELETE_ITEMS, UPDATE_ITEMS } from '../constants/ActionTypes'
 import { SERVER_UPDATE } from '../constants/SocketTypes'
 
-let createItem = text => {
+let createItem = ({text, id}) => {
 	let date = new Date()
 	let time = date.getTime()
 	return {
-		id: time,
+		id,
 		addTime: time,
 		updateTime: time,
 		displayTime: date.toLocaleString(),
@@ -35,7 +35,7 @@ let filterItems = (query, state) => {
 export default (state = [], action) => {
 	switch (action.type) {
 		case ADD_ITEM:
-		return [createItem(action.text), ...state]
+		return [createItem(action), ...state]
 
 		case DELETE_ITEM:
 		return state.filter(item => item.id !== action.id)

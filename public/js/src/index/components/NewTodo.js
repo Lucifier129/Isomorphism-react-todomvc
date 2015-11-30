@@ -11,9 +11,12 @@ export default class NewTodo extends Component {
 		return false
 	}
 	checkInput(input) {
-		let title = input.value
-		if (title) {
-			this.props.addItem(title)
+		let text = input.value
+		if (text) {
+			this.props.addItem({
+				id: Date.now(),
+				text
+			})
 			input.value = ''
 		}
 	}

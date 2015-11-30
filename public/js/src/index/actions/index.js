@@ -1,8 +1,9 @@
 import * as types from '../constants/ActionTypes'
 
-export function addItem(text) {
+export function addItem({ text , id }) {
     return {
         type: types.ADD_ITEM,
+        id,
         text
     }
 }
