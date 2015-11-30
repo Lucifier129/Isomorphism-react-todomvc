@@ -1,13 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import { ENTER_KEY, ESCAPE_KEY } from '../constants/KeyCode'
 import { injectProps } from 'react-props'
-import pureRender from '../pureRenderMixin'
 
 @injectProps()
-@pureRender
 export default class NewTodo extends Component {
 	static propTypes = {
 		addItem: PropTypes.func.isRequired
+	}
+	shouldComponentUpdate() {
+		return false
 	}
 	checkInput(input) {
 		let title = input.value

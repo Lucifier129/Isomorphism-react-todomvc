@@ -8,7 +8,7 @@ let createItem = text => {
 		id: time,
 		addTime: time,
 		updateTime: time,
-		diplayTime: date.toLocaleString(),
+		displayTime: date.toLocaleString(),
 		status: false,
 		text
 	}

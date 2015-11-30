@@ -25,11 +25,14 @@ export default class Todo extends Component {
 		if (text && text !== this.props.text) {
 			this.updateItem({ text })
 		} else if (!text) {
-			this.props.deleteItem()
+			this.destroy()
 		}
 		this.setState({
 			onEdit: false
 		})
+	}
+	destroy = () => {
+		this.props.deleteItem(this.props.id)
 	}
 	handleBlur = (e) => {
 		this.checkEditor(e.currentTarget)
@@ -54,21 +57,24 @@ export default class Todo extends Component {
 		})
 	}
 	updateItem(options = {}) {
-		this.props.updateItem(options)
+		this.props.updateItem({
+			id: this.props.id,
+			...options
+		})
 	}
 	render() {
-		let { id, text, diplayTime, deleteItem, status } = this.props
+		let { id, text, displayTime, status } = this.props
 		let className = classnames({
 			completed: status,
 			editing: this.state.onEdit
 		})
-		console.log(`Todo: ${ id } rendering`)
+		console.log(`Todo: [${ text }] rendering`)
 		return (
-			<li key={ id } className={ className } title={ diplayTime }>
+			<li key={ id } className={ className } title={ displayTime }>
 				<div className="view">
 					<input className="toggle" type="checkbox" onChange={ this.toggleTodo } checked={ status } />
 					<label onDoubleClick={ this.handleDblclick }>{ text }</label>
-					<button className="destroy" onClick={ deleteItem }></button>
+					<button className="destroy" onClick={ this.destroy }></button>
 				</div>
 				<input className="edit" onBlur={ this.handleBlur } onKeyUp={ this.handleKeyup } ref="editor" />
 			</li>

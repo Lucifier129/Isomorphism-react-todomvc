@@ -2,7 +2,6 @@ import { createStore, combineReducers, applyMiddleware, bindActionCreators } fro
 import { bindReducer, setFluxConfig } from 'react-props'
 import * as actionCreators from '../actions'
 import createLogger from 'redux-logger'
-import restfulMiddleware from '../middleware/restful'
 import reducer from '../reducer'
 import * as selectors from './selectors'
 import match from './match'
@@ -16,10 +15,7 @@ let loggerMiddleware = createLogger({
 let finalStoreCreator
 
 if (typeof window !== 'undefined') {
-	finalStoreCreator = applyMiddleware(
-		loggerMiddleware,
-		restfulMiddleware
-	)(createStore)
+	finalStoreCreator = applyMiddleware(loggerMiddleware)(createStore)
 } else {
 	finalStoreCreator = createStore
 }

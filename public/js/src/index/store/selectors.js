@@ -14,12 +14,7 @@ export let Todo = (state, actions, props) => {
 	let todo = state.todos.filter(todo => todo.id === props.id)[0]
 	let { deleteItem, updateItem } = actions 
 	return {
-		updateItem(data) {
-			updateItem({
-				...data,
-				id: todo.id
-			})
-		},
+		updateItem,
 		deleteItem,
 		...todo
 	}

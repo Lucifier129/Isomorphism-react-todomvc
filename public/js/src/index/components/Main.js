@@ -1,10 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import Todos from './Todos'
 import { injectProps } from 'react-props'
-import pureRender from '../pureRenderMixin'
 
 @injectProps()
-@pureRender
 export default class Main extends Component {
 	static propTypes = {
 		updateItems: PropTypes.func.isRequired,
