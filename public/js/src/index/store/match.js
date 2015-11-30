@@ -1,4 +1,4 @@
-import * as filter from '../handlers/activeFilter'
+import * as filter from './handlers/activeFilter'
 
 let matcher = data => {
 	let { key } = data

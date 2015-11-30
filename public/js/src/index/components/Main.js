@@ -4,22 +4,21 @@ import { injectProps } from 'react-props'
 
 @injectProps()
 export default class Main extends Component {
+	static propTypes = {
+		updateItems: PropTypes.func.isRequired,
+		isAllCompleted: PropTypes.bool.isRequired
+	}
+	toggleAll = e => this.props.updateItems({
+		status: e.currentTarget.checked
+	})
 	render() {
-		let { updateItems, isAllCompleted } = this.props
-		let toggleAll = e => updateItems({
-			status: e.currentTarget.checked
-		})
+		let { isAllCompleted } = this.props
 		return (
 			<section id="main">
-				<input id="toggle-all" type="checkbox" onChange={ toggleAll } checked={ isAllCompleted } />
+				<input id="toggle-all" type="checkbox" onChange={ this.toggleAll } checked={ isAllCompleted } />
 				<label htmlFor="toggle-all">Mark all as complete</label>
 				<Todos />
 			</section>
 			)
 	}
-}
-
-Main.propTypes = {
-	updateItems: PropTypes.func.isRequired,
-	isAllCompleted: PropTypes.bool.isRequired
 }

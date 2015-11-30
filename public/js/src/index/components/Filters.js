@@ -4,6 +4,12 @@ import { injectProps } from 'react-props'
 
 @injectProps()
 export default class Filters extends Component {
+	static propTypes = {
+		deleteItems: PropTypes.func.isRequired,
+		todoCount: PropTypes.number.isRequired,
+		completedCount: PropTypes.number.isRequired,
+		activeFilter: PropTypes.string.isRequired
+	}
 	getTodoCount() {
 		let { todoCount } = this.props
 		return `${ todoCount } item${ todoCount > 1 ? 's' : '' } left`
@@ -12,13 +18,16 @@ export default class Filters extends Component {
 		let { completedCount } = this.props
 		return completedCount > 0 ? 'Clear completed (' + completedCount + ')' : ''
 	}
-	render() {
-		let getClassName = filterType => classnames({
+	getClassName = filterType => {
+		return classnames({
 			selected: this.props.activeFilter === filterType
 		})
-		let clearCompleted = () => this.props.deleteItems({
-			status: true
-		})
+	}
+	clearCompleted = () => this.props.deleteItems({
+		status: true
+	})
+	render() {
+		let { clearCompleted, getClassName } = this 
 		return (
 			<footer id="footer">
 				<span id="todo-count">{ this.getTodoCount() }</span>
@@ -37,11 +46,4 @@ export default class Filters extends Component {
 			</footer>
 			)
 	}
-}
-
-Filters.propTypes = {
-	deleteItems: PropTypes.func.isRequired,
-	todoCount: PropTypes.number.isRequired,
-	completedCount: PropTypes.number.isRequired,
-	activeFilter: PropTypes.string.isRequired
 }

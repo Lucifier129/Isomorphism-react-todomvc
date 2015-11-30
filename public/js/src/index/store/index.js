@@ -1,11 +1,11 @@
 import { createStore } from 'refer'
 import createLogger from 'refer-logger'
-import * as handlers from '../handlers'
-import * as server from '../middlewares/server'
-import * as restful from '../middlewares/restful'
-import { config, updater } from 'react-props'
-import * as selectors from '../selectors'
-import matcher from '../matchers'
+import * as handlers from './handlers'
+import * as server from './middlewares/server'
+import * as restful from './middlewares/restful'
+import { setFluxConfig, updater } from 'react-props'
+import * as selectors from './selectors'
+import match from './match'
 
 let logger = createLogger({
 	debug: true
@@ -22,11 +22,11 @@ let store = createStore(handlerList)
 
 let { getState, actions } = store
 
-config({
+setFluxConfig({
 	getState,
 	actions,
 	selectors,
-	matcher
+	match
 })
 
 export default store

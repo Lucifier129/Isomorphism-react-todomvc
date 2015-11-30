@@ -16,7 +16,7 @@ webpackJsonp([1],[
 
 	var _containersRoot2 = _interopRequireDefault(_containersRoot);
 
-	var _store = __webpack_require__(154);
+	var _store = __webpack_require__(150);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -250,27 +250,27 @@ webpackJsonp([1],[
 	var $getState = function $getState() {};
 	var $actions = {};
 	var $selectors = {};
-	var $component = {};
-	var $matcher = undefined;
+	var $components = {};
+	var $match = undefined;
 
-	var config = function config(_ref) {
+	var setFluxConfig = function setFluxConfig(_ref) {
 		var getState = _ref.getState;
 		var selectors = _ref.selectors;
 		var actions = _ref.actions;
-		var matcher = _ref.matcher;
+		var match = _ref.match;
 
-		addSelector(selectors);
+		addSelectors(selectors);
 		$getState = getState;
 		$actions = actions;
-		$matcher = matcher;
+		$match = match;
 	};
 
-	exports.config = config;
-	var onAction = function onAction(data) {
-		if (!isFn($matcher)) {
+	exports.setFluxConfig = setFluxConfig;
+	var handleAction = function handleAction(data) {
+		if (!isFn($match)) {
 			return;
 		}
-		var result = $matcher(data);
+		var result = $match(data);
 		switch (true) {
 			case isObj(result):
 				var name = result.name,
@@ -287,73 +287,82 @@ webpackJsonp([1],[
 		}
 	};
 
-	exports.onAction = onAction;
+	exports.handleAction = handleAction;
 	var updater = {
 		DID_UPDATE: function DID_UPDATE(data) {
-			onAction(data);
+			handleAction(data);
 			return data;
 		}
 	};
 
 	exports.updater = updater;
 	var bindReducer = function bindReducer(reducer) {
-		return function (state, actions) {
-			var nextState = reducer(state, actions);
-			onAction({
+		return function (state, action) {
+			var nextState = reducer(state, action);
+			var $$getState = $getState;
+			$getState = function () {
+				return nextState;
+			};
+			handleAction({
 				state: state,
-				actions: actions
+				nextState: nextState,
+				action: action
 			});
+			$getState = $$getState;
 			return nextState;
 		};
 	};
 
 	exports.bindReducer = bindReducer;
 	// selector
-	var addSelector = function addSelector(obj) {
+	var addSelectors = function addSelectors(obj) {
 		Object.keys(obj).forEach(function (key) {
 			var query = obj[key];
-			if (isFn(query)) {
-				$selectors[key] = function (props) {
-					for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-						args[_key - 1] = arguments[_key];
-					}
-
-					return query.apply(undefined, [$getState(), $actions, props].concat(args));
-				};
+			if (!isFn(query)) {
+				return;
 			}
+			$selectors[key] = function (props) {
+				for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+					args[_key - 1] = arguments[_key];
+				}
+
+				var state = $getState();
+				return query.apply(undefined, [state, $actions, props].concat(args));
+			};
 		});
 	};
 
 	var addComponent = function addComponent(name, component) {
-		if (!isArr($component[name])) {
-			$component[name] = [];
+		if (!isArr($components[name])) {
+			$components[name] = [];
 		}
-		$component[name].push(component);
+		$components[name].push(component);
 	};
 
 	var removeComponent = function removeComponent(name, component) {
-		if (!isArr($component[name])) {
+		if (!isArr($components[name])) {
 			return;
 		}
-		var index = $component.indexOf(component);
+		var index = $components.indexOf(component);
 		if (index !== -1) {
-			$component.splice(i, 1);
+			$components.splice(i, 1);
 		}
 	};
 
-	var getComponent = function getComponent(name) {
-		var components = $component[name];
+	var getComponents = function getComponents(name) {
+		var components = $components[name];
 		return isArr(components) ? components : [];
 	};
 
 	var eachComponent = function eachComponent(name, fn) {
-		getComponent(name).forEach(fn);
+		getComponents(name).forEach(fn);
 	};
 
+	var forceUpdate = function forceUpdate(component) {
+		return component.forceUpdate();
+	};
 	var renderCompoent = function renderCompoent(name) {
-		eachComponent(name, function (component) {
-			return component.forceUpdate();
-		});
+		getComponents(name).forEach(forceUpdate);
 	};
 
 	var injectProps = function injectProps(name) {
@@ -900,9 +909,23 @@ webpackJsonp([1],[
 		_inherits(Filters, _Component);
 
 		function Filters() {
+			var _this = this;
+
 			_classCallCheck(this, _Filters);
 
 			_get(Object.getPrototypeOf(_Filters.prototype), 'constructor', this).apply(this, arguments);
+
+			this.getClassName = function (filterType) {
+				return (0, _classnames2['default'])({
+					selected: _this.props.activeFilter === filterType
+				});
+			};
+
+			this.clearCompleted = function () {
+				return _this.props.deleteItems({
+					status: true
+				});
+			};
 		}
 
 		_createClass(Filters, [{
@@ -922,18 +945,9 @@ webpackJsonp([1],[
 		}, {
 			key: 'render',
 			value: function render() {
-				var _this = this;
+				var clearCompleted = this.clearCompleted;
+				var getClassName = this.getClassName;
 
-				var getClassName = function getClassName(filterType) {
-					return (0, _classnames2['default'])({
-						selected: _this.props.activeFilter === filterType
-					});
-				};
-				var clearCompleted = function clearCompleted() {
-					return _this.props.deleteItems({
-						status: true
-					});
-				};
 				return _react2['default'].createElement(
 					'footer',
 					{ id: 'footer' },
@@ -980,6 +994,15 @@ webpackJsonp([1],[
 					)
 				);
 			}
+		}], [{
+			key: 'propTypes',
+			value: {
+				deleteItems: _react.PropTypes.func.isRequired,
+				todoCount: _react.PropTypes.number.isRequired,
+				completedCount: _react.PropTypes.number.isRequired,
+				activeFilter: _react.PropTypes.string.isRequired
+			},
+			enumerable: true
 		}]);
 
 		var _Filters = Filters;
@@ -988,13 +1011,6 @@ webpackJsonp([1],[
 	})(_react.Component);
 
 	exports['default'] = Filters;
-
-	Filters.propTypes = {
-		deleteItems: _react.PropTypes.func.isRequired,
-		todoCount: _react.PropTypes.number.isRequired,
-		completedCount: _react.PropTypes.number.isRequired,
-		activeFilter: _react.PropTypes.string.isRequired
-	};
 	module.exports = exports['default'];
 
 /***/ },
@@ -1031,27 +1047,28 @@ webpackJsonp([1],[
 		_inherits(Main, _Component);
 
 		function Main() {
+			var _this = this;
+
 			_classCallCheck(this, _Main);
 
 			_get(Object.getPrototypeOf(_Main.prototype), 'constructor', this).apply(this, arguments);
+
+			this.toggleAll = function (e) {
+				return _this.props.updateItems({
+					status: e.currentTarget.checked
+				});
+			};
 		}
 
 		_createClass(Main, [{
 			key: 'render',
 			value: function render() {
-				var _props = this.props;
-				var updateItems = _props.updateItems;
-				var isAllCompleted = _props.isAllCompleted;
+				var isAllCompleted = this.props.isAllCompleted;
 
-				var toggleAll = function toggleAll(e) {
-					return updateItems({
-						status: e.currentTarget.checked
-					});
-				};
 				return _react2['default'].createElement(
 					'section',
 					{ id: 'main' },
-					_react2['default'].createElement('input', { id: 'toggle-all', type: 'checkbox', onChange: toggleAll, checked: isAllCompleted }),
+					_react2['default'].createElement('input', { id: 'toggle-all', type: 'checkbox', onChange: this.toggleAll, checked: isAllCompleted }),
 					_react2['default'].createElement(
 						'label',
 						{ htmlFor: 'toggle-all' },
@@ -1060,6 +1077,13 @@ webpackJsonp([1],[
 					_react2['default'].createElement(_Todos2['default'], null)
 				);
 			}
+		}], [{
+			key: 'propTypes',
+			value: {
+				updateItems: _react.PropTypes.func.isRequired,
+				isAllCompleted: _react.PropTypes.bool.isRequired
+			},
+			enumerable: true
 		}]);
 
 		var _Main = Main;
@@ -1068,11 +1092,6 @@ webpackJsonp([1],[
 	})(_react.Component);
 
 	exports['default'] = Main;
-
-	Main.propTypes = {
-		updateItems: _react.PropTypes.func.isRequired,
-		isAllCompleted: _react.PropTypes.bool.isRequired
-	};
 	module.exports = exports['default'];
 
 /***/ },
@@ -1108,9 +1127,22 @@ webpackJsonp([1],[
 		_inherits(NewTodo, _Component);
 
 		function NewTodo() {
+			var _this = this;
+
 			_classCallCheck(this, _NewTodo);
 
 			_get(Object.getPrototypeOf(_NewTodo.prototype), 'constructor', this).apply(this, arguments);
+
+			this.handleBlur = function (e) {
+				_this.checkInput(e.currentTarget);
+			};
+
+			this.handleKeyup = function (e) {
+				var keyCode = e.keyCode;
+				if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
+					_this.checkInput(e.currentTarget);
+				}
+			};
 		}
 
 		_createClass(NewTodo, [{
@@ -1120,19 +1152,6 @@ webpackJsonp([1],[
 				if (title) {
 					this.props.addItem(title);
 					input.value = '';
-				}
-			}
-		}, {
-			key: 'handleBlur',
-			value: function handleBlur(e) {
-				this.checkInput(e.currentTarget);
-			}
-		}, {
-			key: 'handleKeyup',
-			value: function handleKeyup(e) {
-				var keyCode = e.keyCode;
-				if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
-					this.checkInput(e.currentTarget);
 				}
 			}
 		}, {
@@ -1149,10 +1168,16 @@ webpackJsonp([1],[
 					_react2['default'].createElement('input', {
 						id: 'new-todo',
 						placeholder: 'What needs to be done?',
-						onBlur: this.handleBlur.bind(this),
-						onKeyUp: this.handleKeyup.bind(this) })
+						onBlur: this.handleBlur,
+						onKeyUp: this.handleKeyup })
 				);
 			}
+		}], [{
+			key: 'propTypes',
+			value: {
+				addItem: _react.PropTypes.func.isRequired
+			},
+			enumerable: true
 		}]);
 
 		var _NewTodo = NewTodo;
@@ -1161,10 +1186,6 @@ webpackJsonp([1],[
 	})(_react.Component);
 
 	exports['default'] = NewTodo;
-
-	NewTodo.propTypes = {
-		addItem: _react.PropTypes.func.isRequired
-	};
 	module.exports = exports['default'];
 
 /***/ },
@@ -1201,10 +1222,55 @@ webpackJsonp([1],[
 	var Todo = (function (_Component) {
 		_inherits(Todo, _Component);
 
+		_createClass(Todo, null, [{
+			key: 'propTypes',
+			value: {
+				id: _react.PropTypes.any.isRequired,
+				text: _react.PropTypes.string.isRequired,
+				status: _react.PropTypes.bool.isRequired,
+				updateItem: _react.PropTypes.func.isRequired,
+				deleteItem: _react.PropTypes.func.isRequired
+			},
+			enumerable: true
+		}]);
+
 		function Todo(props, context) {
+			var _this = this;
+
 			_classCallCheck(this, Todo);
 
 			_get(Object.getPrototypeOf(Todo.prototype), 'constructor', this).call(this, props, context);
+
+			this.handleBlur = function (e) {
+				_this.checkEditor(e.currentTarget);
+			};
+
+			this.handleKeyup = function (e) {
+				var keyCode = e.keyCode;
+				var currentTarget = e.currentTarget;
+
+				if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
+					_this.checkEditor(currentTarget);
+				}
+			};
+
+			this.handleDblclick = function () {
+				var editor = _this.refs.editor;
+				editor.value = _this.props.text;
+				_this.setState({
+					onEdit: true
+				});
+				setTimeout(function () {
+					return editor.focus();
+				}, 1);
+			};
+
+			this.toggleTodo = function (e) {
+				_this.updateItem({
+					status: e.currentTarget.checked
+				});
+			};
+
 			this.state = {
 				onEdit: false
 			};
@@ -1221,38 +1287,6 @@ webpackJsonp([1],[
 				}
 				this.setState({
 					onEdit: false
-				});
-			}
-		}, {
-			key: 'handleBlur',
-			value: function handleBlur(e) {
-				this.checkEditor(e.currentTarget);
-			}
-		}, {
-			key: 'handleKeyup',
-			value: function handleKeyup(e) {
-				var keyCode = e.keyCode;
-				var currentTarget = e.currentTarget;
-
-				if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
-					this.checkEditor(currentTarget);
-				}
-			}
-		}, {
-			key: 'handleDblclick',
-			value: function handleDblclick() {
-				var editor = this.refs.editor;
-				editor.value = this.props.text;
-				this.setState({
-					onEdit: true
-				});
-				setTimeout(editor.focus.bind(editor), 1);
-			}
-		}, {
-			key: 'toggleTodo',
-			value: function toggleTodo(e) {
-				this.updateItem({
-					status: e.currentTarget.checked
 				});
 			}
 		}, {
@@ -1282,15 +1316,15 @@ webpackJsonp([1],[
 					_react2['default'].createElement(
 						'div',
 						{ className: 'view' },
-						_react2['default'].createElement('input', { className: 'toggle', type: 'checkbox', onChange: this.toggleTodo.bind(this), checked: status }),
+						_react2['default'].createElement('input', { className: 'toggle', type: 'checkbox', onChange: this.toggleTodo, checked: status }),
 						_react2['default'].createElement(
 							'label',
-							{ onDoubleClick: this.handleDblclick.bind(this) },
+							{ onDoubleClick: this.handleDblclick },
 							text
 						),
 						_react2['default'].createElement('button', { className: 'destroy', onClick: deleteItem })
 					),
-					_react2['default'].createElement('input', { className: 'edit', onBlur: this.handleBlur.bind(this), onKeyUp: this.handleKeyup.bind(this), ref: 'editor' })
+					_react2['default'].createElement('input', { className: 'edit', onBlur: this.handleBlur, onKeyUp: this.handleKeyup, ref: 'editor' })
 				);
 			}
 		}]);
@@ -1299,14 +1333,6 @@ webpackJsonp([1],[
 	})(_react.Component);
 
 	exports['default'] = Todo;
-
-	Todo.propTypes = {
-		id: _react.PropTypes.any.isRequired,
-		text: _react.PropTypes.string.isRequired,
-		status: _react.PropTypes.bool.isRequired,
-		updateItem: _react.PropTypes.func.isRequired,
-		deleteItem: _react.PropTypes.func.isRequired
-	};
 	module.exports = exports['default'];
 
 /***/ },
@@ -1376,6 +1402,14 @@ webpackJsonp([1],[
 					})
 				);
 			}
+		}], [{
+			key: 'propTypes',
+			value: {
+				todos: _react.PropTypes.arrayOf(_react.PropTypes.object.isRequired),
+				updateItem: _react.PropTypes.func.isRequired,
+				deleteItem: _react.PropTypes.func.isRequired
+			},
+			enumerable: true
 		}]);
 
 		var _Todos = Todos;
@@ -1384,12 +1418,6 @@ webpackJsonp([1],[
 	})(_react2['default'].Component);
 
 	exports['default'] = Todos;
-
-	Todos.propTypes = {
-		todos: _react.PropTypes.arrayOf(_react.PropTypes.object.isRequired),
-		updateItem: _react.PropTypes.func.isRequired,
-		deleteItem: _react.PropTypes.func.isRequired
-	};
 	module.exports = exports['default'];
 
 /***/ },
@@ -1445,7 +1473,7 @@ webpackJsonp([1],[
 				return _react2['default'].createElement(
 					'div',
 					null,
-					_react2['default'].createElement(_componentsNewTodo2['default'], { addItem: 'aasdfasdf' }),
+					_react2['default'].createElement(_componentsNewTodo2['default'], null),
 					_react2['default'].createElement(_componentsMain2['default'], null),
 					_react2['default'].createElement(_componentsFilters2['default'], null)
 				);
@@ -1488,6 +1516,74 @@ webpackJsonp([1],[
 
 	'use strict';
 
+	var _interopRequireDefault = __webpack_require__(15)['default'];
+
+	var _interopRequireWildcard = __webpack_require__(54)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _refer = __webpack_require__(86);
+
+	var _referLogger = __webpack_require__(155);
+
+	var _referLogger2 = _interopRequireDefault(_referLogger);
+
+	var _handlers = __webpack_require__(149);
+
+	var handlers = _interopRequireWildcard(_handlers);
+
+	var _middlewaresServer = __webpack_require__(153);
+
+	var server = _interopRequireWildcard(_middlewaresServer);
+
+	var _middlewaresRestful = __webpack_require__(152);
+
+	var restful = _interopRequireWildcard(_middlewaresRestful);
+
+	var _reactProps = __webpack_require__(27);
+
+	var _selectors = __webpack_require__(154);
+
+	var selectors = _interopRequireWildcard(_selectors);
+
+	var _match = __webpack_require__(151);
+
+	var _match2 = _interopRequireDefault(_match);
+
+	var logger = (0, _referLogger2['default'])({
+		debug: true
+	});
+
+	var handlerList = [];
+	if (typeof window === 'undefined') {
+		handlerList = handlers;
+	} else {
+		handlerList = [server, restful, logger, _reactProps.updater, handlers];
+	}
+
+	var store = (0, _refer.createStore)(handlerList);
+
+	var getState = store.getState;
+	var actions = store.actions;
+
+	(0, _reactProps.setFluxConfig)({
+		getState: getState,
+		actions: actions,
+		selectors: selectors,
+		match: _match2['default']
+	});
+
+	exports['default'] = store;
+	module.exports = exports['default'];
+
+/***/ },
+/* 151 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var _interopRequireWildcard = __webpack_require__(54)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
@@ -1513,7 +1609,7 @@ webpackJsonp([1],[
 	module.exports = exports['default'];
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1549,7 +1645,7 @@ webpackJsonp([1],[
 	exports.WILL_UPDATE = WILL_UPDATE;
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1569,7 +1665,7 @@ webpackJsonp([1],[
 	exports.updateTodos = updateTodos;
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1579,37 +1675,6 @@ webpackJsonp([1],[
 	Object.defineProperty(exports, '__esModule', {
 		value: true
 	});
-	var stateToProps = function stateToProps(state) {
-		var todos = state.todos;
-		var activeFilter = state.activeFilter;
-
-		return {
-			activeFilter: activeFilter,
-			todos: todos.filter(function (todo) {
-				switch (activeFilter) {
-					case 'SHOW_ALL':
-						return true;
-
-					case 'SHOW_ACTIVE':
-						return !todo.status;
-
-					case 'SHOW_COMPLETED':
-						return todo.status;
-				}
-			}),
-			isAllCompleted: !!todos.length && todos.every(function (item) {
-				return item.status;
-			}),
-			todoCount: todos.filter(function (item) {
-				return !item.status;
-			}).length,
-			completedCount: todos.filter(function (item) {
-				return item.status;
-			}).length
-		};
-	};
-
-	exports.stateToProps = stateToProps;
 	var NewTodo = function NewTodo(state, actions, props) {
 		return actions;
 	};
@@ -1662,74 +1727,6 @@ webpackJsonp([1],[
 		});
 	};
 	exports.Filters = Filters;
-
-/***/ },
-/* 154 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _interopRequireDefault = __webpack_require__(15)['default'];
-
-	var _interopRequireWildcard = __webpack_require__(54)['default'];
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	var _refer = __webpack_require__(86);
-
-	var _referLogger = __webpack_require__(155);
-
-	var _referLogger2 = _interopRequireDefault(_referLogger);
-
-	var _handlers = __webpack_require__(149);
-
-	var handlers = _interopRequireWildcard(_handlers);
-
-	var _middlewaresServer = __webpack_require__(152);
-
-	var server = _interopRequireWildcard(_middlewaresServer);
-
-	var _middlewaresRestful = __webpack_require__(151);
-
-	var restful = _interopRequireWildcard(_middlewaresRestful);
-
-	var _reactProps = __webpack_require__(27);
-
-	var _selectors = __webpack_require__(153);
-
-	var selectors = _interopRequireWildcard(_selectors);
-
-	var _matchers = __webpack_require__(150);
-
-	var _matchers2 = _interopRequireDefault(_matchers);
-
-	var logger = (0, _referLogger2['default'])({
-		debug: true
-	});
-
-	var handlerList = [];
-	if (typeof window === 'undefined') {
-		handlerList = handlers;
-	} else {
-		handlerList = [server, restful, logger, _reactProps.updater, handlers];
-	}
-
-	var store = (0, _refer.createStore)(handlerList);
-
-	var getState = store.getState;
-	var actions = store.actions;
-
-	(0, _reactProps.config)({
-		getState: getState,
-		actions: actions,
-		selectors: selectors,
-		matcher: _matchers2['default']
-	});
-
-	exports['default'] = store;
-	module.exports = exports['default'];
 
 /***/ },
 /* 155 */

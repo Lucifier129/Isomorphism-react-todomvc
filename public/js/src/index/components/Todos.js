@@ -4,6 +4,11 @@ import { injectProps } from 'react-props'
 
 @injectProps()
 export default class Todos extends React.Component {
+	static propTypes = {
+		todos: PropTypes.arrayOf(PropTypes.object.isRequired),
+		updateItem: PropTypes.func.isRequired,
+		deleteItem: PropTypes.func.isRequired
+	}
 	render() {
 		let { deleteItem, updateItem, todos } = this.props
 		return <ul id="todo-list">{
@@ -19,10 +24,4 @@ export default class Todos extends React.Component {
 			)
 		}</ul>
 	}
-}
-
-Todos.propTypes = {
-	todos: PropTypes.arrayOf(PropTypes.object.isRequired),
-	updateItem: PropTypes.func.isRequired,
-	deleteItem: PropTypes.func.isRequired
 }

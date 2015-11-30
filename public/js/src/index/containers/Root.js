@@ -8,7 +8,7 @@ import { injectProps } from 'react-props'
 export default class Root extends Component {
 	render() {
 		return (<div>
-					<NewTodo addItem="aasdfasdf" />
+					<NewTodo />
 					<Main />
 					<Filters />
 				</div>)

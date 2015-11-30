@@ -5,6 +5,13 @@ const ENTER_KEY = 13
 const ESCAPE_KEY = 27
 
 export default class Todo extends Component {
+	static propTypes = {
+		id: PropTypes.any.isRequired,
+		text: PropTypes.string.isRequired,
+		status: PropTypes.bool.isRequired,
+		updateItem: PropTypes.func.isRequired,
+		deleteItem: PropTypes.func.isRequired
+	}
 	constructor(props, context) {
 		super(props, context)
 		this.state = {
@@ -22,24 +29,24 @@ export default class Todo extends Component {
 			onEdit: false
 		})
 	}
-	handleBlur(e) {
+	handleBlur = e => {
 		this.checkEditor(e.currentTarget)
 	}
-	handleKeyup(e) {
+	handleKeyup = e => {
 		let { keyCode, currentTarget } = e
 		if (keyCode === ENTER_KEY ||  keyCode === ESCAPE_KEY) {
 			this.checkEditor(currentTarget)
 		}
 	}
-	handleDblclick() {
+	handleDblclick = () => {
 		let editor = this.refs.editor
 		editor.value = this.props.text
 		this.setState({
 			onEdit: true
 		})
-		setTimeout(::editor.focus, 1)
+		setTimeout(() => editor.focus(), 1)
 	}
-	toggleTodo(e) {
+	toggleTodo = e => {
 		this.updateItem({
 			status: e.currentTarget.checked
 		})
@@ -56,20 +63,12 @@ export default class Todo extends Component {
 		return (
 			<li key={ id } className={ className } title={ diplayTime }>
 				<div className="view">
-					<input className="toggle" type="checkbox" onChange={ ::this.toggleTodo } checked={ status } />
-					<label onDoubleClick={ ::this.handleDblclick }>{ text }</label>
+					<input className="toggle" type="checkbox" onChange={ this.toggleTodo } checked={ status } />
+					<label onDoubleClick={ this.handleDblclick }>{ text }</label>
 					<button className="destroy" onClick={ deleteItem }></button>
 				</div>
-				<input className="edit" onBlur={ ::this.handleBlur } onKeyUp={ ::this.handleKeyup } ref="editor" />
+				<input className="edit" onBlur={ this.handleBlur } onKeyUp={ this.handleKeyup } ref="editor" />
 			</li>
 			)
 	}
-}
-
-Todo.propTypes = {
-	id: PropTypes.any.isRequired,
-	text: PropTypes.string.isRequired,
-	status: PropTypes.bool.isRequired,
-	updateItem: PropTypes.func.isRequired,
-	deleteItem: PropTypes.func.isRequired
 }
