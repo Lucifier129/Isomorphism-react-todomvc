@@ -1,19 +1,41 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware, bindActionCreators } from 'redux'
+import { bindReducer, setFluxConfig } from 'react-props'
+import * as actionCreators from '../actions'
 import createLogger from 'redux-logger'
 import restfulMiddleware from '../middleware/restful'
-import rootReducers from '../reducers'
+import reducer from '../reducer'
+import * as selectors from './selectors'
+import match from './match'
 
-const loggerMiddleware = createLogger({
+let loggerMiddleware = createLogger({
   level: 'info',
   collapsed: true,
   duration: true
 })
 
-const finalStoreCreator = applyMiddleware(
-	loggerMiddleware,
-	restfulMiddleware
-)(createStore)
+let finalStoreCreator
+
+if (typeof window !== 'undefined') {
+	finalStoreCreator = applyMiddleware(
+		loggerMiddleware,
+		restfulMiddleware
+	)(createStore)
+} else {
+	finalStoreCreator = createStore
+}
+
+
+
 
 export default initialState => {
-	return finalStoreCreator(rootReducers, initialState)
+	let store = finalStoreCreator(bindReducer(reducer), initialState)
+	let { dispatch, getState } = store
+	let actions = bindActionCreators(actionCreators, store.dispatch)
+	setFluxConfig({
+		getState,
+		actions,
+		selectors,
+		match
+	})
+	return store
 }

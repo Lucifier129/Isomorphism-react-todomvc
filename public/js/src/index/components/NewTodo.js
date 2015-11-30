@@ -1,7 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import { ENTER_KEY, ESCAPE_KEY } from '../constants/KeyCode'
+import { injectProps } from 'react-props'
+import pureRender from '../pureRenderMixin'
 
+@injectProps()
+@pureRender
 export default class NewTodo extends Component {
+	static propTypes = {
+		addItem: PropTypes.func.isRequired
+	}
 	checkInput(input) {
 		let title = input.value
 		if (title) {
@@ -9,31 +16,28 @@ export default class NewTodo extends Component {
 			input.value = ''
 		}
 	}
-	handleBlur(e) {
+	handleBlur = (e) => {
 		this.checkInput(e.currentTarget)
 	}
-	handleKeyup(e) {
+	handleKeyup = (e) => {
 		let keyCode = e.keyCode
 		if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
 			this.checkInput(e.currentTarget)
 		}
 	}
 	render() {
+		console.log('NewTodo rendering')
 		return (
 			<header id="header">
 				<h1>todos</h1>
 				<input
 					id="new-todo"
 					placeholder="What needs to be done?"
-					onBlur={ ::this.handleBlur }
-					onKeyUp={ ::this.handleKeyup } />
+					onBlur={ this.handleBlur }
+					onKeyUp={ this.handleKeyup } />
 			</header>
 			)
 	}
-}
-
-NewTodo.propTypes = {
-	addItem: PropTypes.func.isRequired
 }
 
 

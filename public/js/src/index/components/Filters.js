@@ -1,8 +1,18 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
 import { SHOW_ALL, SHOW_ACTIVE, SHOW_COMPLETED } from '../constants/FilterTypes'
+import { injectProps } from 'react-props'
+import pureRender from '../pureRenderMixin'
 
+@injectProps()
+@pureRender
 export default class Filters extends Component {
+	static propTypes = {
+		deleteItems: PropTypes.func.isRequired,
+		todoCount: PropTypes.number.isRequired,
+		completedCount: PropTypes.number.isRequired,
+		activeFilter: PropTypes.string.isRequired
+	}
 	getTodoCount() {
 		let { todoCount } = this.props
 		return `${ todoCount } item${ todoCount > 1 ? 's' : '' } left`
@@ -11,13 +21,15 @@ export default class Filters extends Component {
 		let { completedCount } = this.props
 		return completedCount > 0 ? 'Clear completed (' + completedCount + ')' : ''
 	}
+	getClassName = filterType => classnames({
+		selected: this.props.activeFilter === filterType
+	})
+	clearCompleted = () => this.props.deleteItems({
+		status: true
+	})
 	render() {
-		let getClassName = filterType => classnames({
-			selected: this.props.activeFilter === filterType
-		})
-		let clearCompleted = () => this.props.deleteItems({
-			status: true
-		})
+		console.log('Filters rendering')
+		let { getClassName, clearCompleted } = this
 		return (
 			<footer id="footer">
 				<span id="todo-count">{ this.getTodoCount() }</span>
@@ -36,11 +48,4 @@ export default class Filters extends Component {
 			</footer>
 			)
 	}
-}
-
-Filters.propTypes = {
-	deleteItems: PropTypes.func.isRequired,
-	todoCount: PropTypes.number.isRequired,
-	completedCount: PropTypes.number.isRequired,
-	activeFilter: PropTypes.string.isRequired
 }
