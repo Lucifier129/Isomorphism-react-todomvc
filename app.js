@@ -8,7 +8,7 @@ import routes from './routes/index'
 let app = express()
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'))  //
+app.set('views', path.join(__dirname, 'views'))  //  设置view的位置，下面一句是设置模板引擎
 app.set('view engine', 'hbs')   // hbs : handlebars模板
 
 // uncomment after placing your favicon in /public
@@ -17,7 +17,7 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))  //设置可访问的公共资源路径
 
 app.use('/', routes)
 
