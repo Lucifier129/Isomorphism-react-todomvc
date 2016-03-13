@@ -1,15 +1,15 @@
 import express from 'express'
-import path from 'path'
+import path from 'path'  // node内置模块，处理文件路径
 import favicon from 'serve-favicon'
-import logger from 'morgan'
+import logger from 'morgan'  // HTTP request logger middleware for node.js
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import routes from './routes/index'
 let app = express()
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'hbs')
+app.set('views', path.join(__dirname, 'views'))  //
+app.set('view engine', 'hbs')   // hbs : handlebars模板
 
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
