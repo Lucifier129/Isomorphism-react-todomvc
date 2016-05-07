@@ -1,7 +1,7 @@
 # Isomorphism-react-todomvc
 Isomorphism todomvc powered by react and express
 
-DEMO:http://isomorphism-react-todomvc.coding.io/
+DEMO:https://isomorphism-react-todomvc.herokuapp.com/
 
 ##install
 
